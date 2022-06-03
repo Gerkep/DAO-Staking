@@ -60,7 +60,7 @@ contract CentralDAO is Ownable, IERC721Receiver{
         Voting storage voting = votings[index];
 
         require(!voting.approvals[msg.sender], "You can't vote twice!");
-        require(bytes(voting.header).length != 0);
+        require(bytes(voting.header).length != 0, "Voting doesn't exist.");
         voting.approvals[msg.sender] = true;
         if(approve){  
             voting.approvalCount++;
@@ -123,6 +123,12 @@ contract CentralDAO is Ownable, IERC721Receiver{
     }
     function getUserBalance() public view returns(uint){
         return userBalance[msg.sender];
+    }
+    function setRanks(uint256[] calldata ranks, uint256[] calldata multipliers) public restricted{
+        delete stakingRanks;
+        delete stakingMultipliers;
+        stakingRanks = ranks;
+        stakingMultipliers = multipliers;
     }
     function stake(uint256[] calldata tokenIds) external {
         uint256 tokenId;
